@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,8 @@ public class PlaceableSurface : MonoBehaviour
     Quaternion placeRotation;
     
     Transform _child;
+    
+    public bool isPlate = false;
     
     // Update is called once per frame
     void Update()
@@ -52,6 +55,15 @@ public class PlaceableSurface : MonoBehaviour
             {
                 placingObject = false;
                 _child.position = placePosition;
+                if (_child.GetComponent<PickupEffect>())
+                {
+                    PickupEffect pickupEffect = _child.GetComponent<PickupEffect>();
+                    pickupEffect.ResetValues();
+                }
+                if(isPlate)
+                {
+                    _child.parent = transform;
+                }
             }
         }
         
@@ -66,7 +78,17 @@ public class PlaceableSurface : MonoBehaviour
         hoveredOver = true;
         FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
     }
-    
+
+    private void OnMouseDrag()
+    {
+        if(FirstPersonController.Instance.transform.childCount == 0)
+        {
+            return;
+        }
+        hoveredOver = true;
+        FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
+    }
+
     private void OnMouseExit()
     {
         
