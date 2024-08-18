@@ -24,6 +24,10 @@ public class HighlightEffect : MonoBehaviour
     
     private void OnMouseEnter()
     {
+        if (!enabled)
+        {
+            return;
+        }
         if(FirstPersonController.Instance.transform.childCount > 0)
         {
             return;
@@ -36,7 +40,10 @@ public class HighlightEffect : MonoBehaviour
     
     private void OnMouseExit()
     {
-        
+        if (!enabled)
+        {
+            return;
+        }
         if(FirstPersonController.Instance.transform.childCount > 0)
         {
             return;

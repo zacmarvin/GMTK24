@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PickupEffect : MonoBehaviour
 {
-    bool hoveredOver = false;
+    public bool hoveredOver = false;
     
     public bool pickingUp = false;
     
@@ -20,7 +20,7 @@ public class PickupEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(hoveredOver && Input.GetMouseButtonDown(0))
+        if(hoveredOver && Input.GetMouseButtonDown(0) && transform.parent == null)
         {
             pickingUp = true;
         }
@@ -36,6 +36,13 @@ public class PickupEffect : MonoBehaviour
                 transform.parent = Camera.main.transform;
             }
         }
+    }
+    
+    public void ResetValues()
+    {
+        pickingUp = false;
+        reachedPlayer = false;
+        hoveredOver = false;
     }
     
     private void OnMouseEnter()
