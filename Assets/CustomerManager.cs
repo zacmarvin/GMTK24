@@ -13,7 +13,7 @@ public class CustomerManager : MonoBehaviour
     
     public GameObject CustomerPrefab;
     
-    public int TimeBetweenCustomers = 20;
+    public int TimeBetweenCustomers = 10;
     
     private void Awake()
     {
@@ -32,21 +32,31 @@ public class CustomerManager : MonoBehaviour
     {
         StartCoroutine(SpawnCustomer());
     }
+    
+    public void WaitForFood(GameObject customer)
+    {
+        CustomersInLine.Remove(customer);
+        CustomersWaiting.Add(customer);
+    }
 
     IEnumerator SpawnCustomer()
     {
-        while(CustomersInLine.Count >= 3)
+        while (true)
         {
-            yield return null;
+            while(CustomersInLine.Count >= 3)
+            {
+                yield return null;
+            }
+        
+            GameObject customer = Instantiate(CustomerPrefab, new Vector3(13.5f, 1, 5.5f), Quaternion.identity);
+        
+            CustomersInLine.Add(customer);
+        
+        
+            yield return new WaitForSeconds(TimeBetweenCustomers);
+        
+            TimeBetweenCustomers -= 1;
         }
-        
-        GameObject customer = Instantiate(CustomerPrefab, new Vector3(13.5f, 1, 5.5f), Quaternion.identity);
-        
-        CustomersInLine.Add(customer);
-        
-        
-        yield return new WaitForSeconds(TimeBetweenCustomers);
-        
-        TimeBetweenCustomers -= 1;
+
     }
 }

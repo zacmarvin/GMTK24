@@ -27818,6 +27818,7 @@ MonoBehaviour:
   CustomersWaiting: []
   CustomerPrefab: {fileID: 163437592426332646, guid: d6097d4e76e8d9c47b7b3b9763bf1d49,
     type: 3}
+  TimeBetweenCustomers: 5
 --- !u!1 &2110906909
 GameObject:
   m_ObjectHideFlags: 0
