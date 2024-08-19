@@ -13,13 +13,7 @@ public class HighlightEffect : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        _defaultMaterial = GetComponent<Renderer>().material;
     }
     
     private void OnMouseEnter()
@@ -34,7 +28,6 @@ public class HighlightEffect : MonoBehaviour
         }
         
         FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.PickupCrosshairSprite;
-        _defaultMaterial = GetComponent<Renderer>().material;
         GetComponent<Renderer>().material = HighlightMaterial;
     }
     

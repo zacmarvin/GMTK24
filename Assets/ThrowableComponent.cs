@@ -10,19 +10,12 @@ public class ThrowableComponent : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Throw()
     {
-        if(transform.parent == FirstPersonController.Instance.transform)
-        {
-            if(Input.GetMouseButtonDown(1))
-            {
-                transform.parent = null;
-                transform.gameObject.AddComponent<Rigidbody>();
+        transform.parent = null;
+        transform.gameObject.AddComponent<Rigidbody>();
                     
-                GetComponent<Rigidbody>().isKinematic = false;
-                GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * 10f, ForceMode.Impulse);
-            }
-        }
+        GetComponent<Rigidbody>().isKinematic = false;
+        GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * 10f, ForceMode.Impulse);
     }
 }

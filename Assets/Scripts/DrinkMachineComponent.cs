@@ -50,7 +50,9 @@ public class DrinkMachineComponent : MonoBehaviour
             {
                 Transform child = FirstPersonController.Instance.transform.GetChild(0);
 
-                if (!child.gameObject.CompareTag("EmptyDrink"))
+                DataObject dataObject = child.gameObject.GetComponent<DataObject>();
+                
+                if (dataObject == null || dataObject.thisFoodItemData.CurrentFoodType != FoodItemData.FoodType.EmptyDrink)
                 {
                     return;
                 }
@@ -65,17 +67,13 @@ public class DrinkMachineComponent : MonoBehaviour
                         return;
                     }
                 
-                    if(child.gameObject.GetComponent<DataObject>() != null)
-                    {
-                        DataObject dataObject = child.gameObject.GetComponent<DataObject>();
-                        placingObject = true;
-                        child.parent = null;
-                        hoveredOver = false;
-                        placeRotation = dataObject.GetCurrentRotation();
-                        placePosition = transform.position + new Vector3(-0.12f, -0.22f, 0.23f) + dataObject.GetCurrentOffset();
-                        Debug.Log(placePosition);
-                        _child = child;
-                    }
+                    placingObject = true;
+                    child.parent = null;
+                    hoveredOver = false;
+                    placeRotation = dataObject.GetCurrentRotation();
+                    placePosition = transform.position + new Vector3(-0.12f, -0.22f, 0.23f) + dataObject.GetCurrentOffset();
+                    Debug.Log(placePosition);
+                    _child = child;
                 }
                 
                 
@@ -169,6 +167,10 @@ public class DrinkMachineComponent : MonoBehaviour
         YellowDrinkParticles.Stop();
         BrownDrinkParticles.Stop();
         
+        DataObject dataObject = _child.gameObject.GetComponent<DataObject>();
+        
+        dataObject.thisFoodItemData.CurrentFoodType = FoodItemData.FoodType.Drink;
+
         operating = true;
         StartCoroutine(Operating());
 
@@ -176,18 +178,24 @@ public class DrinkMachineComponent : MonoBehaviour
         {
             case "Red":
                 RedDrinkParticles.Play();
+                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Red;
                 break;
             case "Green":
                 GreenDrinkParticles.Play();
+                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Green;
+                
                 break;
             case "Blue":
                 BlueDrinkParticles.Play();
+                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Blue;
                 break;
             case "Yellow":
                 YellowDrinkParticles.Play();
+                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Yellow;
                 break;
             case "Brown":
                 BrownDrinkParticles.Play();
+                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Brown;
                 break;
             default:
                 break;
@@ -221,7 +229,9 @@ public class DrinkMachineComponent : MonoBehaviour
             {
                 Transform child = FirstPersonController.Instance.transform.GetChild(0);
 
-                if (child.gameObject.CompareTag("EmptyDrink"))
+                DataObject dataObject = child.gameObject.GetComponent<DataObject>();
+                
+                if (dataObject != null  && dataObject.thisFoodItemData.CurrentFoodType == FoodItemData.FoodType.EmptyDrink)
                 {
                     FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
                 }
