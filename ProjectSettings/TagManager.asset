@@ -9,6 +9,10 @@ TagManager:
   - DrinkMachine
   - Drink
   - EmptyDrink
+  - Popsicle
+  - Hamburger
+  - Taco
+  - HotDog
   layers:
   - Default
   - TransparentFX

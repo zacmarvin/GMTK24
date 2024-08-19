@@ -16,6 +16,8 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] public Sprite BusyCrosshairSprite;
     
     [SerializeField] public Sprite ScrollPlusClickCrosshairSprite;
+
+    public float ReachDistance = 0.5f;
     
     public float moveSpeed = 5f;
     public float mouseSensitivity = 2f;

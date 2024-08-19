@@ -20,7 +20,8 @@ public class PickupEffect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(hoveredOver && Input.GetMouseButtonDown(0) && transform.parent == null)
+        float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
+        if(hoveredOver && Input.GetMouseButtonDown(0) && transform.parent == null && FirstPersonController.Instance.transform.childCount == 0 && DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
         {
             pickingUp = true;
         }
@@ -45,20 +46,24 @@ public class PickupEffect : MonoBehaviour
             }
         }
     }
-    
+
     public void ResetValues()
     {
         pickingUp = false;
         reachedPlayer = false;
         hoveredOver = false;
-        
-        // Raycast to mouse if hits the gameobject, set hoveredOver to true
-        RaycastHit hit;
-        if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 10f))
-        {
-            if(hit.transform == transform)
+
+        float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
+
+        if (DistanceToPlayer < FirstPersonController.Instance.ReachDistance){
+                // Raycast to mouse if hits the gameobject, set hoveredOver to true
+                RaycastHit hit;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 10f))
             {
-                hoveredOver = true;
+                if (hit.transform == transform)
+                {
+                    hoveredOver = true;
+                }
             }
         }
     }
@@ -75,10 +80,6 @@ public class PickupEffect : MonoBehaviour
     
     private void OnMouseExit()
     {
-        if(FirstPersonController.Instance.transform.childCount > 0)
-        {
-            return;
-        }
         reachedPlayer = false;
         hoveredOver = false;
     }

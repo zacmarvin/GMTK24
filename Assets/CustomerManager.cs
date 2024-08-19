@@ -13,6 +13,10 @@ public class CustomerManager : MonoBehaviour
     public List<GameObject> CustomersWaiting = new List<GameObject>();
     
     public List<GameObject> CustomerPrefabs = new List<GameObject>();
+
+    public int customerSatisfaction = 100;
+    
+    public TMP_Text CustomerSatisfactionText;
     
     public Sprite BurgerIcon;
     
@@ -128,6 +132,7 @@ public class CustomerManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(SpawnCustomer());
+        StartCoroutine(DepleteSatisfaction());
     }
     
     public void WaitForFood(GameObject customer)
@@ -207,7 +212,7 @@ public class CustomerManager : MonoBehaviour
         customerNumberText.text = customerComponent.CustomerNumber.ToString();
 
         // Loop through the order items and update the ticket UI
-        for (int i = 0; i < customerComponent.OrderItems.Count && i < icons.Length; i++)
+        for (int i = 0; i < customerComponent.OrderItems.Count; i++)
         {
             var orderItem = customerComponent.OrderItems[i];
 
@@ -236,7 +241,15 @@ public class CustomerManager : MonoBehaviour
 
             // Update the texts
             line1Texts[i].text = orderItem.CurrentOrderSize.ToString();
+            if(orderItem.CurrentOrderSize == FoodItemData.OrderSize.None)
+            {
+                line1Texts[i].text = "";
+            }
             line2Texts[i].text = orderItem.CurrentTemperature.ToString();
+            if(orderItem.CurrentTemperature == FoodItemData.Temperature.None)
+            {
+                line2Texts[i].text = "";
+            }
             if(orderItem.CurrentFoodType == FoodItemData.FoodType.Drink || orderItem.CurrentFoodType == FoodItemData.FoodType.EmptyDrink)
             {
                 line3Texts[i].text = orderItem.CurrentDrinkType.ToString();
@@ -245,7 +258,29 @@ public class CustomerManager : MonoBehaviour
             {
                 line3Texts[i].text = "";
             }
+            
+            if(orderItem.CurrentDrinkType == FoodItemData.DrinkType.None)
+            {
+                line3Texts[i].text = "";
+            }
         }
+        
+        if(customerComponent.OrderItems.Count < 3)
+        {
+            icons[2].sprite = null;
+            line1Texts[2].text = "";
+            line2Texts[2].text = "";
+            line3Texts[2].text = "";
+        }
+        
+        if(customerComponent.OrderItems.Count < 2)
+        {
+            icons[1].sprite = null;
+            line1Texts[1].text = "";
+            line2Texts[1].text = "";
+            line3Texts[1].text = "";
+        }
+        
 
         // Show the ticket
         ticket.SetActive(true);
@@ -280,5 +315,15 @@ public class CustomerManager : MonoBehaviour
             TimeBetweenCustomers -= 1;
         }
 
+    }
+
+    IEnumerator DepleteSatisfaction()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(2);
+            customerSatisfaction -= CustomersWaiting.Count;
+            CustomerSatisfactionText.text = customerSatisfaction.ToString();
+        }
     }
 }

@@ -27,8 +27,13 @@ public class HighlightEffect : MonoBehaviour
             return;
         }
         
-        FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.PickupCrosshairSprite;
-        GetComponent<Renderer>().material = HighlightMaterial;
+        float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
+
+        if (DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
+        {
+            FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.PickupCrosshairSprite;
+            GetComponent<Renderer>().material = HighlightMaterial;
+        }
     }
     
     private void OnMouseExit()
@@ -37,10 +42,7 @@ public class HighlightEffect : MonoBehaviour
         {
             return;
         }
-        if(FirstPersonController.Instance.transform.childCount > 0)
-        {
-            return;
-        }
+
         
         FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DefaultCrosshairSprite;
         GetComponent<Renderer>().material = _defaultMaterial;

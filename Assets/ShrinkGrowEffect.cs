@@ -47,7 +47,9 @@ public class ShrinkGrowEffect : MonoBehaviour
     {
         if(transform.childCount == 0)
         {
-            if (hoveredOver && Input.GetMouseButtonDown(0))
+            float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
+
+            if (hoveredOver && Input.GetMouseButtonDown(0) && DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
             {
                 // Dont do anything if player is holding a plate
                 if (FirstPersonController.Instance.transform.childCount > 0)
@@ -66,7 +68,7 @@ public class ShrinkGrowEffect : MonoBehaviour
                 // Move child 0 to mouse position
                 // Raycast to find position to place object
                 RaycastHit hit;
-                if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 10f))
+                if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2f))
                 {
                     if(FirstPersonController.Instance.transform.childCount == 0)
                     {
@@ -120,7 +122,7 @@ public class ShrinkGrowEffect : MonoBehaviour
                 if (operating)
                 {
                     // Spin and bounce _child
-                    _child.Rotate(Vector3.up, 360f * Time.deltaTime);
+                    _child.Rotate(Vector3.up, 360f * Time.deltaTime, Space.World);
                     _child.position = new Vector3(startPosition.x, _child.position.y + Mathf.Sin(Time.time * 7) * 0.1f * Time.deltaTime, startPosition.z);
                 }
                 else
@@ -173,6 +175,7 @@ public class ShrinkGrowEffect : MonoBehaviour
                 if (Vector3.Distance(_child.localScale, intendedScale) < 0.01f)
                 {
                     _child.GetComponent<DataObject>().thisFoodItemData.CurrentOrderSize = FoodItemData.OrderSize.Small;
+                    _child.GetComponent<DataObject>().CurrentScale = DataObject.Scale.small;
                     return true;
                 }
                 else
@@ -187,6 +190,7 @@ public class ShrinkGrowEffect : MonoBehaviour
                 {
                     
                     _child.GetComponent<DataObject>().thisFoodItemData.CurrentOrderSize = FoodItemData.OrderSize.Medium;
+                    _child.GetComponent<DataObject>().CurrentScale = DataObject.Scale.medium;
                     return true;
                 }
                 else
@@ -201,6 +205,7 @@ public class ShrinkGrowEffect : MonoBehaviour
                 if (Vector3.Distance(_child.localScale, intendedScale) < 0.01f)
                 {
                     _child.GetComponent<DataObject>().thisFoodItemData.CurrentOrderSize = FoodItemData.OrderSize.Large;
+                    _child.GetComponent<DataObject>().CurrentScale = DataObject.Scale.large;
                     return true;
                 }
                 else

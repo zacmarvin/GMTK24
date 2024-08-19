@@ -3,27 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DrinkMachineComponent : MonoBehaviour
+public class Oven : MonoBehaviour
 {
     
     
-    public ParticleSystem RedDrinkParticles;
-    public ParticleSystem GreenDrinkParticles;
-    public ParticleSystem BlueDrinkParticles;
-    public ParticleSystem YellowDrinkParticles;
-    public ParticleSystem BrownDrinkParticles;
 
-    public ButtonObjectComponent RedDrinkButton;
-    public ButtonObjectComponent GreenDrinkButton;
-    public ButtonObjectComponent BlueDrinkButton;
-    public ButtonObjectComponent YellowDrinkButton;
-    public ButtonObjectComponent BrownDrinkButton;
+    public ButtonObjectComponent FreezeButton;
+    public ButtonObjectComponent CoolButton;
+    public ButtonObjectComponent WarmButton;
+    public ButtonObjectComponent HotButton;
+    public ButtonObjectComponent BurnButton;
     
-    public HighlightEffect RedDrinkHighlight;
-    public HighlightEffect GreenDrinkHighlight;
-    public HighlightEffect BlueDrinkHighlight;
-    public HighlightEffect YellowDrinkHighlight;
-    public HighlightEffect BrownDrinkHighlight;
+    public HighlightEffect FreezeButtonHighlight;
+    public HighlightEffect CoolButtonHighlight;
+    public HighlightEffect WarmButtonHighlight;
+    public HighlightEffect HotButtonHighlight;
+    public HighlightEffect BurnHighlight;
     
     bool hoveredOver = false;
     
@@ -89,7 +84,7 @@ public class DrinkMachineComponent : MonoBehaviour
                 if(Vector3.Distance(_child.position, placePosition) < 0.1f)
                 {
                     placingObject = false;
-                    EnableDrinkButtons();
+                    EnableButtons();
                     _child.position = placePosition;
                     _child.parent = transform;
                     startTime = Time.time;
@@ -122,95 +117,46 @@ public class DrinkMachineComponent : MonoBehaviour
             if(operating && Time.time - startTime >= operationDuration)
             {
                 operating = false;
-                DisableDrinkButtons();
+                DisableButtons();
                 UpdateCrosshair();
             }
         }
         
     }
     
-    void EnableDrinkButtons()
+    void EnableButtons()
     {
-        RedDrinkButton.enabled = true;
-        GreenDrinkButton.enabled = true;
-        BlueDrinkButton.enabled = true;
-        YellowDrinkButton.enabled = true;
-        BrownDrinkButton.enabled = true;
-        RedDrinkHighlight.enabled = true;
-        GreenDrinkHighlight.enabled = true;
-        BlueDrinkHighlight.enabled = true;
-        YellowDrinkHighlight.enabled = true;
-        BrownDrinkHighlight.enabled = true;
-        
-        
+        FreezeButton.enabled = true;
+        CoolButton.enabled = true;
+        WarmButton.enabled = true;
+        HotButton.enabled = true;
+        BurnButton.enabled = true;
+        FreezeButtonHighlight.enabled = true;
+        CoolButtonHighlight.enabled = true;
+        WarmButtonHighlight.enabled = true;
+        HotButtonHighlight.enabled = true;
+        BurnHighlight.enabled = true;
     }
     
-    void DisableDrinkButtons()
+    void DisableButtons()
     {
-        RedDrinkButton.enabled = false;
-        GreenDrinkButton.enabled = false;
-        BlueDrinkButton.enabled = false;
-        YellowDrinkButton.enabled = false;
-        BrownDrinkButton.enabled = false;
-        RedDrinkHighlight.enabled = false;
-        GreenDrinkHighlight.enabled = false;
-        BlueDrinkHighlight.enabled = false;
-        YellowDrinkHighlight.enabled = false;
-        BrownDrinkHighlight.enabled = false;
-    }
-    
-        
-
-    public void SetDrinkColor(string color)
-    {
-        RedDrinkParticles.Stop();
-        GreenDrinkParticles.Stop();
-        BlueDrinkParticles.Stop();
-        YellowDrinkParticles.Stop();
-        BrownDrinkParticles.Stop();
-        
-        DataObject dataObject = _child.gameObject.GetComponent<DataObject>();
-        
-        dataObject.thisFoodItemData.CurrentFoodType = FoodItemData.FoodType.Drink;
-
-        operating = true;
-        StartCoroutine(Operating());
-
-        switch(color)
-        {
-            case "Red":
-                RedDrinkParticles.Play();
-                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Red;
-                break;
-            case "Green":
-                GreenDrinkParticles.Play();
-                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Green;
-                
-                break;
-            case "Blue":
-                BlueDrinkParticles.Play();
-                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Blue;
-                break;
-            case "Yellow":
-                YellowDrinkParticles.Play();
-                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Yellow;
-                break;
-            case "Brown":
-                BrownDrinkParticles.Play();
-                dataObject.thisFoodItemData.CurrentDrinkType = FoodItemData.DrinkType.Brown;
-                break;
-            default:
-                break;
-        }
-        
-        
+        FreezeButton.enabled = false;
+        CoolButton.enabled = false;
+        WarmButton.enabled = false;
+        HotButton.enabled = false;
+        BurnButton.enabled = false;
+        FreezeButtonHighlight.enabled = false;
+        CoolButtonHighlight.enabled = false;
+        WarmButtonHighlight.enabled = false;
+        HotButtonHighlight.enabled = false;
+        BurnHighlight.enabled = false;
     }
     
     IEnumerator Operating()
     {
         yield return new WaitForSeconds(operationDuration);
         operating = false;
-        DisableDrinkButtons();
+        DisableButtons();
     }
     
     private void OnMouseEnter()
