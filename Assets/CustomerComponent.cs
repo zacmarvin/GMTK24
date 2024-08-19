@@ -9,9 +9,15 @@ public class CustomerComponent : MonoBehaviour
     {
         WalkingUp,
         WaitingInLine,
+        UpToOrder,
         WaitingOnFood,
         Leaving
     }
+    
+    public FoodItemData.OrderSize RequiredOrderSize;
+    
+    [SerializeField]
+    public List<FoodItemData> OrderItems = new List<FoodItemData>();
 
     private Vector3 cornerPosition = new Vector3(1, 1, 5.5f);
     
@@ -39,6 +45,39 @@ public class CustomerComponent : MonoBehaviour
     
     public bool hoveredOver = false;
 
+    private void OnEnable()
+    {
+        // Generate random order
+        int orderCount = UnityEngine.Random.Range(1, 4);
+        HashSet<FoodItemData.FoodType> usedFoodTypes = new HashSet<FoodItemData.FoodType>();
+
+        for (int i = 0; i < orderCount; i++)
+        {
+            FoodItemData foodItemData = new FoodItemData();
+            foodItemData.CurrentOrderSize = RequiredOrderSize;
+    
+            // Generate a unique FoodType that hasn't been used yet
+            FoodItemData.FoodType newFoodType;
+            do
+            {
+                newFoodType = (FoodItemData.FoodType)UnityEngine.Random.Range(0, 4);
+            } while (usedFoodTypes.Contains(newFoodType));
+
+            foodItemData.CurrentFoodType = newFoodType;
+            usedFoodTypes.Add(newFoodType);
+
+            if(foodItemData.CurrentFoodType == FoodItemData.FoodType.Drink)
+            {
+                foodItemData.CurrentDrinkType = (FoodItemData.DrinkType)UnityEngine.Random.Range(1, 6);
+            }
+    
+            foodItemData.CurrentTemperature = (FoodItemData.Temperature)UnityEngine.Random.Range(1, 6);
+    
+            OrderItems.Add(foodItemData);
+        }
+
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -65,6 +104,10 @@ public class CustomerComponent : MonoBehaviour
                 else if (linePosition == 1)
                 {
                     transform.position = Vector3.MoveTowards(transform.position, linePosition1, moveSpeed * Time.deltaTime);
+                    if (Vector3.Distance(transform.position, linePosition1) < 0.1f)
+                    {
+                        CurrentState = CustomerState.UpToOrder;
+                    }
                 }
                 break;
             case CustomerState.WaitingOnFood:
@@ -93,7 +136,7 @@ public class CustomerComponent : MonoBehaviour
         
         if(hoveredOver && Input.GetMouseButtonDown(0) && CustomerManager.Instance.CustomersWaiting.Count < 3)
         {
-            if (CurrentState == CustomerState.WaitingInLine)
+            if (CurrentState == CustomerState.UpToOrder)
             {
                 CustomerManager.Instance.WaitForFood(gameObject);
                 CurrentState = CustomerState.WaitingOnFood;
@@ -104,8 +147,24 @@ public class CustomerComponent : MonoBehaviour
         {
             if (CurrentState == CustomerState.WaitingOnFood)
             {
-                // TODO check for right order
-                StartCoroutine(DelayedLeave());
+                GameObject child = FirstPersonController.Instance.transform.GetChild(0).gameObject;
+
+                if (child.GetComponent<ThrowableComponent>())
+                {
+                    ThrowableComponent throwableComponent = child.GetComponent<ThrowableComponent>();
+                    throwableComponent.Throw();
+                    
+                    CustomerManager.Instance.CustomersWaiting.Remove(gameObject);
+
+                    Debug.Log("Order was:" + OrderItems);
+                    Debug.Log("Order thrown was:" + child.GetComponent<DataObject>().thisFoodItemData);
+                    // Loop through child children and log data object thisFoodItemData
+                    foreach (Transform childTransform in child.transform)
+                    {
+                        Debug.Log(childTransform.GetComponent<DataObject>().thisFoodItemData);
+                    }
+                    StartCoroutine(DelayedLeave());  
+                }
             }
         }
     }

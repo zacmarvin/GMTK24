@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DataObject : MonoBehaviour
 {
+    public FoodItemData thisFoodItemData;
+    
     public ScriptableObject dataObject;
 
     public enum Scale

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShrinkGrowEffect : MonoBehaviour
@@ -94,12 +95,16 @@ public class ShrinkGrowEffect : MonoBehaviour
     private void OnMouseEnter()
     {
         hoveredOver = true;
-        FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
+        FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.ScrollPlusClickCrosshairSprite;
+        FirstPersonController.Instance.Crosshair.gameObject.GetComponent<RectTransform>().sizeDelta =
+            new Vector2(96, 96);
     }
     
     private void OnMouseExit()
     {
         hoveredOver = false;
         FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DefaultCrosshairSprite;
+        FirstPersonController.Instance.Crosshair.gameObject.GetComponent<RectTransform>().sizeDelta =
+            new Vector2(48, 48);
     }
 }

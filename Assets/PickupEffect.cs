@@ -34,6 +34,14 @@ public class PickupEffect : MonoBehaviour
                 reachedPlayer = true;
                 pickingUp = false;
                 transform.parent = Camera.main.transform;
+                // If has child turn off all childs colliders:
+                if(transform.childCount > 0)
+                {
+                    foreach(Transform child in transform)
+                    {
+                        child.GetComponent<Collider>().enabled = false;
+                    }
+                }
             }
         }
     }
@@ -43,6 +51,16 @@ public class PickupEffect : MonoBehaviour
         pickingUp = false;
         reachedPlayer = false;
         hoveredOver = false;
+        
+        // Raycast to mouse if hits the gameobject, set hoveredOver to true
+        RaycastHit hit;
+        if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 10f))
+        {
+            if(hit.transform == transform)
+            {
+                hoveredOver = true;
+            }
+        }
     }
     
     private void OnMouseEnter()
