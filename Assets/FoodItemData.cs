@@ -17,6 +17,7 @@ public class FoodItemData
     {
         Burger,
         Taco,
+        Hotdog,
         Drink,
         Popsicle,
         // Non orderable items

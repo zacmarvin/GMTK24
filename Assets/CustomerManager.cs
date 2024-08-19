@@ -11,7 +11,7 @@ public class CustomerManager : MonoBehaviour
     
     public List<GameObject> CustomersWaiting = new List<GameObject>();
     
-    public GameObject CustomerPrefab;
+    public List<GameObject> CustomerPrefabs = new List<GameObject>();
     
     public int TimeBetweenCustomers = 10;
     
@@ -48,7 +48,9 @@ public class CustomerManager : MonoBehaviour
                 yield return null;
             }
         
-            GameObject customer = Instantiate(CustomerPrefab, new Vector3(13.5f, 1, 5.5f), Quaternion.identity);
+            int randomIndex = UnityEngine.Random.Range(0, CustomerPrefabs.Count);
+            
+            GameObject customer = Instantiate(CustomerPrefabs[randomIndex], new Vector3(13.5f, 0.1f, 5.5f), Quaternion.identity);
         
             CustomersInLine.Add(customer);
         

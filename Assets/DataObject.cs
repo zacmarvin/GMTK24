@@ -6,7 +6,7 @@ public class DataObject : MonoBehaviour
 {
     public FoodItemData thisFoodItemData;
     
-    public ScriptableObject dataObject;
+    public CustomObject dataObject;
 
     public enum Scale
     {
@@ -53,6 +53,7 @@ public class DataObject : MonoBehaviour
                 return Vector3.zero;
         }
     }
+
     
     public Vector3 GetCurrentOffset()
     {

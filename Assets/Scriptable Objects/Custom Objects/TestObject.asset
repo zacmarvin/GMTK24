@@ -18,11 +18,11 @@ MonoBehaviour:
   mediumOffsetPosition: {x: 0, y: 0.05, z: 0}
   largeOffsetPosition: {x: 0, y: 0.1, z: 0}
   hugeOffsetPosition: {x: 0, y: 0.2, z: 0}
-  microScale: {x: 0, y: 0.01, z: 0}
-  smallScale: {x: 0, y: 0.05, z: 0}
-  mediumScale: {x: 0, y: 0, z: 0}
-  largeScale: {x: 0, y: 0.2, z: 0}
-  hugeScale: {x: 0, y: 0.4, z: 0}
+  microScale: {x: 0.01, y: 0.01, z: 0.01}
+  smallScale: {x: 0.05, y: 0.05, z: 0.05}
+  mediumScale: {x: 0.1, y: 0.1, z: 0.1}
+  largeScale: {x: 0.2, y: 0.2, z: 0.2}
+  hugeScale: {x: 0.4, y: 0.4, z: 0.4}
   coldMesh: {fileID: 0}
   coolMesh: {fileID: 0}
   warmMesh: {fileID: 0}

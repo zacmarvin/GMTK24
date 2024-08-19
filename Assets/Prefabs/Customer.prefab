@@ -121,6 +121,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7603a565f6557e84688ea2ebfa7feaa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OrderItems: []
+  AvailableMeshes:
+  - {fileID: 2959467708922500008, guid: 9851fed30132c2d408219043a832d30e, type: 3}
+  - {fileID: 2959467708922500008, guid: 451dbd6e7ab1ccb4ebc9d0734c010de5, type: 3}
+  - {fileID: 2959467708922500008, guid: f70d97c4225eb144fae63b49ded2e943, type: 3}
   CurrentState: 0
   moveSpeed: 1.5
   linePosition: 3
