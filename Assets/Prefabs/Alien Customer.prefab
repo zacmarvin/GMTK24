@@ -126,7 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OrderItems: []
   minimumScale: {x: 0.45, y: 0.45, z: 0.45}
-  maximumScale: {x: 0.9, y: 0.9, z: 0.9}
+  maximumScale: {x: 0.82, y: 0.82, z: 0.82}
   CurrentState: 0
   moveSpeed: 1.5
   rotationSpeed: 10

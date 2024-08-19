@@ -104,20 +104,16 @@ public class CustomerComponent : MonoBehaviour
         material.color = Color.HSVToRGB(h, s, v);
 
         // if material has _colorDim property, change hue of that color to the same random value
-        if (material.HasProperty("_ColorDim"))
-        {
-            // Get the _ColorDim property color
-            Color colorDim = material.GetColor("_ColorDim");
+        // Get the _ColorDim property color
+        Color colorDim = material.GetColor("_ColorDim");
     
-            // Change hue of _ColorDim to the same random value
-            Color.RGBToHSV(colorDim, out float hDim, out float sDim, out float vDim);
-            hDim = h; // Use the same hue as the base color
-            Color newColorDim = Color.HSVToRGB(hDim, sDim, vDim);
+        // Change hue of _ColorDim to the same random value
+        Color.RGBToHSV(colorDim, out float hDim, out float sDim, out float vDim);
+        hDim = h; // Use the same hue as the base color
+        Color newColorDim = Color.HSVToRGB(hDim, sDim, vDim);
 
-            // Apply the new _ColorDim color to the material
-            material.SetColor("_ColorDim", newColorDim);
-        }
-
+        // Apply the new _ColorDim color to the material
+        material.SetColor("_ColorDim", newColorDim);
     }
     
     void Update()
