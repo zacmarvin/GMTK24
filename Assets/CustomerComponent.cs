@@ -13,6 +13,8 @@ public class CustomerComponent : MonoBehaviour
         Leaving
     }
 
+    public int CustomerNumber = 0;
+
     [SerializeField]
     public List<FoodItemData> OrderItems = new List<FoodItemData>();
     
@@ -98,23 +100,39 @@ public class CustomerComponent : MonoBehaviour
 
     private void AssignRandomBaseColor(Material material)
     {
-        // Change hue of material base color to random value
-        Color.RGBToHSV(material.color, out float h, out float s, out float v);
-        h = UnityEngine.Random.Range(0.0f, 1.0f);
-        material.color = Color.HSVToRGB(h, s, v);
+        // Check if the material has a "_Color" property before trying to access it
+        if (material.HasProperty("_Color"))
+        {
+            // Change hue of material base color to random value
+            Color.RGBToHSV(material.color, out float h, out float s, out float v);
+            h = UnityEngine.Random.Range(0.0f, 1.0f);
+            material.color = Color.HSVToRGB(h, s, v);
+        }
+        else
+        {
+            Debug.LogWarning($"Material '{material.name}' doesn't have a '_Color' property.");
+        }
 
-        // if material has _colorDim property, change hue of that color to the same random value
-        // Get the _ColorDim property color
-        Color colorDim = material.GetColor("_ColorDim");
-    
-        // Change hue of _ColorDim to the same random value
-        Color.RGBToHSV(colorDim, out float hDim, out float sDim, out float vDim);
-        hDim = h; // Use the same hue as the base color
-        Color newColorDim = Color.HSVToRGB(hDim, sDim, vDim);
+        // Check if the material has a "_ColorDim" property before trying to access it
+        if (material.HasProperty("_ColorDim"))
+        {
+            // Get the _ColorDim property color
+            Color colorDim = material.GetColor("_ColorDim");
 
-        // Apply the new _ColorDim color to the material
-        material.SetColor("_ColorDim", newColorDim);
+            // Change hue of _ColorDim to the same random value
+            Color.RGBToHSV(colorDim, out float hDim, out float sDim, out float vDim);
+            hDim = UnityEngine.Random.Range(0.0f, 1.0f);
+            Color newColorDim = Color.HSVToRGB(hDim, sDim, vDim);
+
+            // Apply the new _ColorDim color to the material
+            material.SetColor("_ColorDim", newColorDim);
+        }
+        else
+        {
+            Debug.LogWarning($"Material '{material.name}' doesn't have a '_ColorDim' property.");
+        }
     }
+
     
     void Update()
     {
@@ -195,7 +213,7 @@ public class CustomerComponent : MonoBehaviour
                     ThrowableComponent throwableComponent = child.GetComponent<ThrowableComponent>();
                     throwableComponent.Throw();
 
-                    CustomerManager.Instance.CustomersWaiting.Remove(gameObject);
+                    CustomerManager.Instance.UpdateAllTickets();
 
                     Debug.Log("Order was:" + OrderItems);
                     Debug.Log("Order thrown was:" + child.GetComponent<DataObject>().thisFoodItemData);
@@ -274,5 +292,7 @@ public class CustomerComponent : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         CurrentState = CustomerState.Leaving;
+        CustomerManager.Instance.CustomersWaiting.Remove(gameObject);
+        CustomerManager.Instance.UpdateAllTickets();
     }
 }
