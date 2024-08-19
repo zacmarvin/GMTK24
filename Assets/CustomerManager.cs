@@ -26,6 +26,8 @@ public class CustomerManager : MonoBehaviour
     
     public GameObject Ticket1;
     
+    public TMP_Text Ticket1CustomerNumberText;
+    
     public SpriteRenderer Ticket1Item1Icon;
     
     public TMP_Text Ticket1Item1Line1Text;
@@ -52,6 +54,8 @@ public class CustomerManager : MonoBehaviour
     
     public GameObject Ticket2;
     
+    public TMP_Text Ticket2CustomerNumberText;
+
     public SpriteRenderer Ticket2Item1Icon;
     
     public TMP_Text Ticket2Item1Line1Text;
@@ -78,6 +82,8 @@ public class CustomerManager : MonoBehaviour
     
     public GameObject Ticket3;
     
+    public TMP_Text Ticket3CustomerNumberText;
+
     public SpriteRenderer Ticket3Item1Icon;
     
     public TMP_Text Ticket3Item1Line1Text;
@@ -128,7 +134,8 @@ public class CustomerManager : MonoBehaviour
     {
         CustomersInLine.Remove(customer);
         CustomersWaiting.Add(customer);
-        
+        CustomerComponent customerComponent = customer.GetComponent<CustomerComponent>();
+        customerComponent.FloatingCustomerNumberCanvas.enabled = true;
         UpdateAllTickets();
     }
     
@@ -144,6 +151,7 @@ public class CustomerManager : MonoBehaviour
         
         // Assign the correct ticket and UI elements based on the customerIndex
         GameObject ticket = null;
+        TMP_Text customerNumberText = null;
         SpriteRenderer[] icons = null;
         TMP_Text[] line1Texts = null;
         TMP_Text[] line2Texts = null;
@@ -153,6 +161,7 @@ public class CustomerManager : MonoBehaviour
         {
             case 0:
                 ticket = Ticket1;
+                customerNumberText = Ticket1CustomerNumberText;
                 icons = new SpriteRenderer[] { Ticket1Item1Icon, Ticket1Item2Icon, Ticket1Item3Icon };
                 line1Texts = new TMP_Text[] { Ticket1Item1Line1Text, Ticket1Item2Line1Text, Ticket1Item3Line1Text };
                 line2Texts = new TMP_Text[] { Ticket1Item1Line2Text, Ticket1Item2Line2Text, Ticket1Item3Line2Text };
@@ -160,6 +169,7 @@ public class CustomerManager : MonoBehaviour
                 break;
             case 1:
                 ticket = Ticket2;
+                customerNumberText = Ticket2CustomerNumberText;
                 icons = new SpriteRenderer[] { Ticket2Item1Icon, Ticket2Item2Icon, Ticket2Item3Icon };
                 line1Texts = new TMP_Text[] { Ticket2Item1Line1Text, Ticket2Item2Line1Text, Ticket2Item3Line1Text };
                 line2Texts = new TMP_Text[] { Ticket2Item1Line2Text, Ticket2Item2Line2Text, Ticket2Item3Line2Text };
@@ -167,6 +177,7 @@ public class CustomerManager : MonoBehaviour
                 break;
             case 2:
                 ticket = Ticket3;
+                customerNumberText = Ticket3CustomerNumberText;
                 icons = new SpriteRenderer[] { Ticket3Item1Icon, Ticket3Item2Icon, Ticket3Item3Icon };
                 line1Texts = new TMP_Text[] { Ticket3Item1Line1Text, Ticket3Item2Line1Text, Ticket3Item3Line1Text };
                 line2Texts = new TMP_Text[] { Ticket3Item1Line2Text, Ticket3Item2Line2Text, Ticket3Item3Line2Text };
@@ -191,6 +202,9 @@ public class CustomerManager : MonoBehaviour
         {
             return;
         }
+        
+        // Set the customer number
+        customerNumberText.text = customerComponent.CustomerNumber.ToString();
 
         // Loop through the order items and update the ticket UI
         for (int i = 0; i < customerComponent.OrderItems.Count && i < icons.Length; i++)
@@ -255,6 +269,8 @@ public class CustomerManager : MonoBehaviour
             
             CustomerComponent customerComponent = customer.GetComponent<CustomerComponent>();
             customerComponent.CustomerNumber = CustomerCount;
+            customerComponent.FloatingCustomerNumberText.text = CustomerCount.ToString();
+            customerComponent.FloatingCustomerNumberCanvas.enabled = false;
             
             CustomersInLine.Add(customer);
         

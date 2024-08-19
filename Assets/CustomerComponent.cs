@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CustomerComponent : MonoBehaviour
@@ -15,6 +16,10 @@ public class CustomerComponent : MonoBehaviour
 
     public int CustomerNumber = 0;
 
+    public Canvas FloatingCustomerNumberCanvas;
+    
+    public TMP_Text FloatingCustomerNumberText;
+    
     [SerializeField]
     public List<FoodItemData> OrderItems = new List<FoodItemData>();
     
@@ -215,19 +220,94 @@ public class CustomerComponent : MonoBehaviour
 
                     CustomerManager.Instance.UpdateAllTickets();
 
-                    Debug.Log("Order was:" + OrderItems);
-                    Debug.Log("Order thrown was:" + child.GetComponent<DataObject>().thisFoodItemData);
-                    // Loop through child children and log data object thisFoodItemData
-                    foreach (Transform childTransform in child.transform)
-                    {
-                        Debug.Log(childTransform.GetComponent<DataObject>().thisFoodItemData);
-                    }
+                    CheckOrderFulfillment(child);
                     StartCoroutine(DelayedLeave());
                 }
             }
         }
     }
+    
+    private void CheckOrderFulfillment(GameObject child)
+    {
+        float totalFulfillment = 0f;
+        int orderCount = OrderItems.Count;
+        
+        foreach (var orderItem in OrderItems)
+        {
+            float highestFulfillment = 0f;
 
+            // Loop through the child objects to find the best match
+            foreach (Transform childTransform in child.transform)
+            {
+                var thrownItem = childTransform.GetComponent<DataObject>().thisFoodItemData;
+
+                if (thrownItem != null)
+                {
+                    // Calculate the fulfillment percentage for this child item
+                    float fulfillmentPercentage = CalculateOrderFulfillment(orderItem, thrownItem);
+
+                    // If this fulfillment percentage is higher, update the highestFulfillment
+                    if (fulfillmentPercentage > highestFulfillment)
+                    {
+                        highestFulfillment = fulfillmentPercentage;
+                    }
+                }
+            }
+
+            // Accumulate the highest fulfillment percentage for this order item
+            totalFulfillment += highestFulfillment;
+
+            Debug.Log($"Order item: {orderItem.CurrentFoodType}, Best Fulfillment: {highestFulfillment}%");
+        }
+        
+        // Calculate the average fulfillment percentage
+        float averageFulfillment = totalFulfillment / orderCount;
+
+        Debug.Log($"Average Fulfillment: {averageFulfillment}%");
+    }
+
+    private float CalculateOrderFulfillment(FoodItemData orderItem, FoodItemData thrownItem)
+    {
+        int totalAttributes = 3; // FoodType, Temperature, and OrderSize are always compared
+        int matchedAttributes = 0;
+
+        // Compare FoodType
+        if (orderItem.CurrentFoodType == thrownItem.CurrentFoodType || thrownItem.CurrentFoodType == FoodItemData.FoodType.Drink && thrownItem.CurrentFoodType == FoodItemData.FoodType.EmptyDrink)
+        {
+            matchedAttributes++;
+        }
+        else
+        {
+            return 0;
+        }
+
+        // Compare Temperature
+        if (orderItem.CurrentTemperature == thrownItem.CurrentTemperature || orderItem.CurrentTemperature == FoodItemData.Temperature.None)
+        {
+            matchedAttributes++;
+        }
+
+        // Compare OrderSize
+        if (orderItem.CurrentOrderSize == thrownItem.CurrentOrderSize || orderItem.CurrentOrderSize == FoodItemData.OrderSize.None)
+        {
+            matchedAttributes++;
+        }
+
+        // If it's a drink, compare DrinkType
+        if (orderItem.CurrentFoodType == FoodItemData.FoodType.Drink || orderItem.CurrentFoodType == FoodItemData.FoodType.EmptyDrink)
+        {
+            totalAttributes++;
+            if (orderItem.CurrentDrinkType == thrownItem.CurrentDrinkType || orderItem.CurrentDrinkType == FoodItemData.DrinkType.None)
+            {
+                matchedAttributes++;
+            }
+        }
+
+        // Calculate percentage of fulfilled attributes
+        return (float)matchedAttributes / totalAttributes * 100f;
+    }
+
+    
     private void MoveAndRotateTowards(Vector3 targetPosition)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
