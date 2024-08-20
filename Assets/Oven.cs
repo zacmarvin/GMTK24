@@ -132,7 +132,11 @@ public class Oven : MonoBehaviour
             if(operating && Time.time - startTime >= operationDuration)
             {
                 operating = false;
-
+                AudioSource audioSource = GetComponent<AudioSource>();
+                if(audioSource != null)
+                {
+                    audioSource.Play();
+                }
                 DisableButtons();
                 UpdateCrosshair();
             }

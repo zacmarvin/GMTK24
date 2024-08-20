@@ -12,7 +12,7 @@ public class PlaceableSurface : MonoBehaviour
     [SerializeField]
     public UnityEvent OptionalEventOnPlaceObject;
 
-    bool hoveredOver = false;
+    public bool hoveredOver = false;
     
     bool placingObject = false;
     
@@ -89,22 +89,6 @@ public class PlaceableSurface : MonoBehaviour
         {
             return;
         }
-        float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
-
-        if (DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
-        {
-            hoveredOver = true;
-            FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
-        }
-    }
-
-    private void OnMouseDrag()
-    {
-        if(FirstPersonController.Instance.transform.childCount == 0)
-        {
-            return;
-        }
-        
         float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
 
         if (DistanceToPlayer < FirstPersonController.Instance.ReachDistance)

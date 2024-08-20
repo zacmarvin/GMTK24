@@ -261,6 +261,10 @@ public class CustomerManager : MonoBehaviour
                 line1Texts[i].text = "";
             }
             line2Texts[i].text = orderItem.CurrentTemperature.ToString();
+            if(line2Texts[i].text == "Cold")
+            {
+                line2Texts[i].text = "Cool";
+            }
             if(orderItem.CurrentTemperature == FoodItemData.Temperature.None)
             {
                 line2Texts[i].text = "";

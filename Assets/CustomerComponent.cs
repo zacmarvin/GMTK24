@@ -13,6 +13,8 @@ public class CustomerComponent : MonoBehaviour
         WaitingOnFood,
         Leaving
     }
+    
+    public List<AudioClip> audioClips = new List<AudioClip>();
 
     public int CustomerNumber = 0;
 
@@ -167,6 +169,11 @@ public class CustomerComponent : MonoBehaviour
                     if (Vector3.Distance(transform.position, linePosition1) < 0.1f)
                     {
                         CurrentState = CustomerState.UpToOrder;
+                        AudioSource audioSource = CustomerManager.Instance.GetComponent<AudioSource>();
+                        if (audioSource != null)
+                        {
+                            audioSource.Play();
+                        }
                     }
                 }
                 break;
@@ -220,6 +227,12 @@ public class CustomerComponent : MonoBehaviour
 
                     CustomerManager.Instance.UpdateAllTickets();
 
+                    AudioSource audioSource = GetComponent<AudioSource>();
+                    if (audioSource != null)
+                    {
+                        AudioClip audioClip = audioClips[Random.Range(0, audioClips.Count)];
+                        audioSource.PlayOneShot(audioClip);
+                    }
                     CheckOrderFulfillment(child);
                     StartCoroutine(DelayedLeave());
                 }
