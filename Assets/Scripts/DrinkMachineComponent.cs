@@ -46,7 +46,9 @@ public class DrinkMachineComponent : MonoBehaviour
     {
         if(transform.childCount == 0)
         {
-            if(hoveredOver && Input.GetMouseButtonDown(0))
+            float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
+
+            if(hoveredOver && Input.GetMouseButtonDown(0) && DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
             {
                 Transform child = FirstPersonController.Instance.transform.GetChild(0);
 
@@ -60,7 +62,7 @@ public class DrinkMachineComponent : MonoBehaviour
                 // Move child 0 to mouse position
                 // Raycast to find position to place object
                 RaycastHit hit;
-                if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 10f))
+                if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2f))
                 {
                     if(FirstPersonController.Instance.transform.childCount == 0)
                     {
@@ -166,6 +168,8 @@ public class DrinkMachineComponent : MonoBehaviour
         BlueDrinkParticles.Stop();
         YellowDrinkParticles.Stop();
         BrownDrinkParticles.Stop();
+        AudioSource audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
         
         DataObject dataObject = _child.gameObject.GetComponent<DataObject>();
         

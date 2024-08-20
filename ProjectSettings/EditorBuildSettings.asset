@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/MainMenu.unity
+    guid: 9780aef45fd920440b4bc439511ba5cb
+  - enabled: 1
+    path: Assets/Scenes/Foodtruck.unity
+    guid: 0caa271f244348346829d3a4aff30c70
   m_configObjects: {}

@@ -78,7 +78,7 @@ public class CustomerComponent : MonoBehaviour
             FoodItemData.FoodType newFoodType;
             do
             {
-                newFoodType = (FoodItemData.FoodType)UnityEngine.Random.Range(0, 4);
+                newFoodType = (FoodItemData.FoodType)UnityEngine.Random.Range(0, 5);
             } while (usedFoodTypes.Contains(newFoodType));
 
             foodItemData.CurrentFoodType = newFoodType;
@@ -263,7 +263,14 @@ public class CustomerComponent : MonoBehaviour
         // Calculate the average fulfillment percentage
         float averageFulfillment = totalFulfillment / orderCount;
 
-        Debug.Log($"Average Fulfillment: {averageFulfillment}%");
+        // 100% fulfillment add 10 to customer satisfaction
+        // 50% does nothing
+        // 0% subtract 10 from customer satisfaction
+        float satisfactionChange = 30f * (averageFulfillment / 100f) - 10f;
+        Debug.Log("Satisfaction Change: " + satisfactionChange);
+        
+        CustomerManager.Instance.customerSatisfaction += Mathf.RoundToInt(satisfactionChange);
+        CustomerManager.Instance.UpdateCustomerSatisfactionUI();
     }
 
     private float CalculateOrderFulfillment(FoodItemData orderItem, FoodItemData thrownItem)
@@ -332,6 +339,11 @@ public class CustomerComponent : MonoBehaviour
 
     private void SmoothlyFacePlayer()
     {
+        if(FirstPersonController.Instance.transform == null)
+        {
+            return;
+        }
+        
         Vector3 playerPosition = FirstPersonController.Instance.transform.position;
         playerPosition.y = transform.position.y; // Keep rotation on the horizontal plane
 
@@ -360,6 +372,26 @@ public class CustomerComponent : MonoBehaviour
     private void OnMouseEnter()
     {
         hoveredOver = true;
+
+        if (CurrentState == CustomerState.UpToOrder)
+        {
+            FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.PickupCrosshairSprite;
+        }
+        else if (CurrentState == CustomerState.WaitingOnFood)
+        {
+            if (FirstPersonController.Instance.transform.childCount > 0)
+            {
+                Transform child = FirstPersonController.Instance.transform.GetChild(0);
+                if (child.GetComponent<DataObject>())
+                {
+                    DataObject dataObject = child.GetComponent<DataObject>();
+                    if (dataObject.thisFoodItemData.CurrentFoodType == FoodItemData.FoodType.Plate)
+                    {
+                        FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.ThrowSprite;
+                    }
+                }
+            }
+        }
     }
 
     private void OnMouseExit()

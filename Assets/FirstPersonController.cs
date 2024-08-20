@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,6 +6,8 @@ public class FirstPersonController : MonoBehaviour
 {
     public static FirstPersonController Instance;
     
+    public TMP_Text HoldingText;
+
     [SerializeField] public Image Crosshair;
     
     [SerializeField] public Sprite PickupCrosshairSprite;
@@ -14,8 +17,12 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] public Sprite DropCrosshairSprite;
     
     [SerializeField] public Sprite BusyCrosshairSprite;
+
+    [SerializeField] public Sprite ThrowSprite;
     
     [SerializeField] public Sprite ScrollPlusClickCrosshairSprite;
+
+    public float ReachDistance = 0.5f;
     
     public float moveSpeed = 5f;
     public float mouseSensitivity = 2f;
@@ -73,6 +80,12 @@ public class FirstPersonController : MonoBehaviour
         transform.localRotation = Quaternion.Euler(0f, rotationY, 0f);
 
         transform.localRotation = Quaternion.Euler(rotationX, rotationY, 0f);
+        
+        // If child count is 0, set holding text to empty
+        if(transform.childCount == 0)
+        {
+            HoldingText.text = "";
+        }
     }
     
     private bool GroundBelowNewPosition(Vector3 newPosition)

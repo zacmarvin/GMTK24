@@ -8,6 +8,8 @@ public class ButtonObjectComponent : MonoBehaviour
 {
     [SerializeField]
     public UnityEvent OnButtonPressed;
+    
+    public int allowedChildCount = 0;
 
     private bool hoveredOver = false;
 
@@ -26,7 +28,7 @@ public class ButtonObjectComponent : MonoBehaviour
         {
             return;
         }
-        if (FirstPersonController.Instance.transform.childCount > 0)
+        if (FirstPersonController.Instance.transform.childCount > allowedChildCount)
         {
             return;
         }
@@ -39,10 +41,6 @@ public class ButtonObjectComponent : MonoBehaviour
     private void OnMouseExit()
     {
         if (!enabled)
-        {
-            return;
-        }
-        if (FirstPersonController.Instance.transform.childCount > 0)
         {
             return;
         }

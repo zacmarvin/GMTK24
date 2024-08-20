@@ -2,9 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlaceableSurface : MonoBehaviour
 {
+    [SerializeField]
+    public bool CallEventOnPlaceObject = false;
+    
+    [SerializeField]
+    public UnityEvent OptionalEventOnPlaceObject;
+
     bool hoveredOver = false;
     
     bool placingObject = false;
@@ -20,7 +27,9 @@ public class PlaceableSurface : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(hoveredOver && Input.GetMouseButtonDown(0))
+        float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
+
+        if(hoveredOver && Input.GetMouseButtonDown(0) && DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
         {
             // Move child 0 to mouse position
             // Raycast to find position to place object
@@ -64,6 +73,11 @@ public class PlaceableSurface : MonoBehaviour
                 {
                     _child.parent = transform;
                 }
+                
+                if(CallEventOnPlaceObject)
+                {
+                    OptionalEventOnPlaceObject.Invoke();
+                }
             }
         }
         
@@ -75,8 +89,13 @@ public class PlaceableSurface : MonoBehaviour
         {
             return;
         }
-        hoveredOver = true;
-        FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
+        float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
+
+        if (DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
+        {
+            hoveredOver = true;
+            FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
+        }
     }
 
     private void OnMouseDrag()
@@ -85,8 +104,14 @@ public class PlaceableSurface : MonoBehaviour
         {
             return;
         }
-        hoveredOver = true;
-        FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
+        
+        float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
+
+        if (DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
+        {
+            hoveredOver = true;
+            FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
+        }
     }
 
     private void OnMouseExit()
@@ -96,6 +121,8 @@ public class PlaceableSurface : MonoBehaviour
         {
             return;
         }
+        
+
         hoveredOver = false;
         FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DefaultCrosshairSprite;
     }
