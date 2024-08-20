@@ -174,26 +174,6 @@ public class DataObject : MonoBehaviour
         }
         return stringToReturn;
     }
-
-    public Vector3 GetCurrentScale()
-    {
-        switch(CurrentScale)
-        {
-            case Scale.micro:
-                return ((CustomObject)dataObject).microScale;
-            case Scale.small:
-                return ((CustomObject)dataObject).smallScale;
-            case Scale.medium:
-                return ((CustomObject)dataObject).mediumScale;
-            case Scale.large:
-                return ((CustomObject)dataObject).largeScale;
-            case Scale.huge:
-                return ((CustomObject)dataObject).hugeScale;
-            default:
-                return Vector3.zero;
-        }
-    }
-
     
     public Vector3 GetCurrentOffset()
     {
@@ -211,25 +191,6 @@ public class DataObject : MonoBehaviour
                 return ((CustomObject)dataObject).hugeOffsetPosition;
             default:
                 return Vector3.zero;
-        }
-    }
-    
-    public Mesh GetCurrentMesh()
-    {
-        switch(CurrentTemperature)
-        {
-            case Temperature.cold:
-                return ((CustomObject)dataObject).coldMesh;
-            case Temperature.cool:
-                return ((CustomObject)dataObject).coolMesh;
-            case Temperature.warm:
-                return ((CustomObject)dataObject).warmMesh;
-            case Temperature.hot:
-                return ((CustomObject)dataObject).hotMesh;
-            case Temperature.burning:
-                return ((CustomObject)dataObject).burningMesh;
-            default:
-                return null;
         }
     }
     

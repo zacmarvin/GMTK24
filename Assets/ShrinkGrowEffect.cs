@@ -134,7 +134,7 @@ public class ShrinkGrowEffect : MonoBehaviour
                 }
             }
 
-            if (hoveredOver && Input.GetMouseButtonDown(0) && !operating)
+            if (hoveredOver && Input.GetMouseButtonDown(0) && !operating && FirstPersonController.Instance.transform.childCount == 0)
             {     
                 Debug.Log("Child");
                 Transform child = transform.GetChild(0);

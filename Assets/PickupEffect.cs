@@ -28,13 +28,19 @@ public class PickupEffect : MonoBehaviour
         
         if( pickingUp && !reachedPlayer)
         {
+            if(FirstPersonController.Instance.transform.childCount > 0)
+            {
+                pickingUp = false;
+                return;
+            }
+            
             transform.position = Vector3.MoveTowards(transform.position, Camera.main.transform.position + Camera.main.transform.forward * 0.5f - (Camera.main.transform.up * 0.2f), pickupSpeed * Time.deltaTime);
             
             if(Vector3.Distance(transform.position, Camera.main.transform.position + Camera.main.transform.forward * 0.5f - (Camera.main.transform.up * 0.2f)) < 0.1f)
             {
                 reachedPlayer = true;
                 pickingUp = false;
-                transform.parent = Camera.main.transform;
+                transform.parent = FirstPersonController.Instance.transform;
                 // If has child turn off all childs colliders:
                 if(transform.childCount > 0)
                 {

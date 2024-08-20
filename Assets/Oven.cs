@@ -172,7 +172,7 @@ public class Oven : MonoBehaviour
     {
         if(doorHinge.doorState != DoorHinge.DoorState.Closed)
         {
-            return;
+            doorHinge.ToggleDoor();
         }
         
         ovenState = (OvenState)state;
@@ -191,6 +191,8 @@ public class Oven : MonoBehaviour
         if (pickupEffect != null)
         {
             pickupEffect.enabled = true;
+            pickupEffect.hoveredOver = false;
+            pickupEffect.pickingUp = false;
         }
         particleSystem.Stop();
         Transform child = transform.GetChild(0);
