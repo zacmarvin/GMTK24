@@ -226,6 +226,8 @@ public class ShrinkGrowEffect : MonoBehaviour
     
     public void ToggleKnob()
     {
+        AudioSource audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
         startTime = Time.time;
         startScale = _child.localScale;
         operating = true;

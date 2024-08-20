@@ -168,6 +168,8 @@ public class DrinkMachineComponent : MonoBehaviour
         BlueDrinkParticles.Stop();
         YellowDrinkParticles.Stop();
         BrownDrinkParticles.Stop();
+        AudioSource audioSource = GetComponent<AudioSource>();
+        audioSource.Play();
         
         DataObject dataObject = _child.gameObject.GetComponent<DataObject>();
         

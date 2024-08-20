@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultRotation: {x: -0.70710677, y: 0, z: 0, w: 0.70710677}
   microOffsetPosition: {x: 0, y: 0, z: 0}
-  smallOffsetPosition: {x: 0, y: 0, z: 0}
+  smallOffsetPosition: {x: 0, y: 0.05, z: 0}
   mediumOffsetPosition: {x: 0, y: 0.15, z: 0}
-  largeOffsetPosition: {x: 0, y: 0, z: 0}
+  largeOffsetPosition: {x: 0, y: 0.35, z: 0}
   hugeOffsetPosition: {x: 0, y: 0, z: 0}
   microScale: {x: 0, y: 0, z: 0}
   smallScale: {x: 0.5, y: 0.5, z: 0.5}

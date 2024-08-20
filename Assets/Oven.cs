@@ -2,12 +2,28 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Oven : MonoBehaviour
 {
-    
-    
+    [SerializeField]
+    public UnityEvent CloseDoor;
 
+    public enum OvenState
+    {
+        Frozen,
+        Cold,
+        Warm,
+        Hot,
+        Burnt
+    }
+    [SerializeField]
+    ParticleSystem particleSystem;
+    
+    public OvenState ovenState = OvenState.Warm;
+
+    public DoorHinge doorHinge;
+    
     public ButtonObjectComponent FreezeButton;
     public ButtonObjectComponent CoolButton;
     public ButtonObjectComponent WarmButton;
@@ -43,35 +59,24 @@ public class Oven : MonoBehaviour
         {
             float DistanceToPlayer = Vector3.Distance(transform.position, Camera.main.transform.position);
 
-            if(hoveredOver && Input.GetMouseButtonDown(0) && DistanceToPlayer < FirstPersonController.Instance.ReachDistance)
+            if(hoveredOver && Input.GetMouseButtonDown(0) && DistanceToPlayer < FirstPersonController.Instance.ReachDistance && FirstPersonController.Instance.transform.childCount > 0)
             {
                 Transform child = FirstPersonController.Instance.transform.GetChild(0);
 
                 DataObject dataObject = child.gameObject.GetComponent<DataObject>();
                 
-                if (dataObject == null || dataObject.thisFoodItemData.CurrentFoodType != FoodItemData.FoodType.EmptyDrink)
+                if (dataObject == null || dataObject.thisFoodItemData.CurrentFoodType == FoodItemData.FoodType.EmptyDrink)
                 {
                     return;
                 }
                 
-                // Move child 0 to mouse position
-                // Raycast to find position to place object
-                RaycastHit hit;
-                if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 2f))
-                {
-                    if(FirstPersonController.Instance.transform.childCount == 0)
-                    {
-                        return;
-                    }
-                
-                    placingObject = true;
-                    child.parent = null;
-                    hoveredOver = false;
-                    placeRotation = dataObject.GetCurrentRotation();
-                    placePosition = transform.position + new Vector3(-0.12f, -0.22f, 0.23f) + dataObject.GetCurrentOffset();
-                    Debug.Log(placePosition);
-                    _child = child;
-                }
+                placingObject = true;
+                child.parent = null;
+                hoveredOver = false;
+                placeRotation = dataObject.GetCurrentRotation();
+                placePosition = transform.position  + dataObject.GetCurrentOffset();
+                Debug.Log(placePosition);
+                _child = child;
                 
                 
             }
@@ -84,10 +89,16 @@ public class Oven : MonoBehaviour
                 if(Vector3.Distance(_child.position, placePosition) < 0.1f)
                 {
                     placingObject = false;
+                    CloseDoor?.Invoke();
                     EnableButtons();
                     _child.position = placePosition;
                     _child.parent = transform;
                     startTime = Time.time;
+                    PickupEffect pickupEffect = _child.gameObject.GetComponent<PickupEffect>();
+                    if (pickupEffect != null)
+                    {
+                        pickupEffect.enabled = false;
+                    }
                 }
             }
         }
@@ -112,11 +123,16 @@ public class Oven : MonoBehaviour
                     pickupEffect.pickingUp = true;
                     pickupEffect.reachedPlayer = false;
                 }
+                
+                hoveredOver = false;
+                placingObject = false;
+                child = null;
             }
             
             if(operating && Time.time - startTime >= operationDuration)
             {
                 operating = false;
+
                 DisableButtons();
                 UpdateCrosshair();
             }
@@ -152,11 +168,56 @@ public class Oven : MonoBehaviour
         BurnHighlight.enabled = false;
     }
     
+    public void SetOvenState(int state)
+    {
+        if(doorHinge.doorState != DoorHinge.DoorState.Closed)
+        {
+            return;
+        }
+        
+        ovenState = (OvenState)state;
+
+        operating = true;
+        StartCoroutine(Operating());
+    }
+    
     IEnumerator Operating()
     {
+        particleSystem.Play();
         yield return new WaitForSeconds(operationDuration);
         operating = false;
         DisableButtons();
+        PickupEffect pickupEffect = _child.gameObject.GetComponent<PickupEffect>();
+        if (pickupEffect != null)
+        {
+            pickupEffect.enabled = true;
+        }
+        particleSystem.Stop();
+        Transform child = transform.GetChild(0);
+        DataObject dataObject = child.gameObject.GetComponent<DataObject>();
+        if(dataObject != null)
+        {
+            if(ovenState == OvenState.Frozen)
+            {
+                dataObject.thisFoodItemData.CurrentTemperature = FoodItemData.Temperature.Freezing;
+            }
+            else if(ovenState == OvenState.Cold)
+            {
+                dataObject.thisFoodItemData.CurrentTemperature = FoodItemData.Temperature.Cold;
+            }
+            else if(ovenState == OvenState.Warm)
+            {
+                dataObject.thisFoodItemData.CurrentTemperature = FoodItemData.Temperature.Warm;
+            }
+            else if(ovenState == OvenState.Hot)
+            {
+                dataObject.thisFoodItemData.CurrentTemperature = FoodItemData.Temperature.Hot;
+            }
+            else if(ovenState == OvenState.Burnt)
+            {
+                dataObject.thisFoodItemData.CurrentTemperature = FoodItemData.Temperature.Burning;
+            }
+        }
     }
     
     private void OnMouseEnter()
@@ -179,7 +240,7 @@ public class Oven : MonoBehaviour
 
                 DataObject dataObject = child.gameObject.GetComponent<DataObject>();
                 
-                if (dataObject != null  && dataObject.thisFoodItemData.CurrentFoodType == FoodItemData.FoodType.EmptyDrink)
+                if (dataObject != null  && dataObject.thisFoodItemData.CurrentFoodType != FoodItemData.FoodType.EmptyDrink)
                 {
                     FirstPersonController.Instance.Crosshair.sprite = FirstPersonController.Instance.DropCrosshairSprite;
                 }

@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class DataObject : MonoBehaviour
 {
+    
     public FoodItemData thisFoodItemData;
     
     public CustomObject dataObject;
@@ -34,7 +38,143 @@ public class DataObject : MonoBehaviour
     {
         return ((CustomObject)dataObject).defaultRotation;
     }
+
+
+    private void Update()
+    {
+        if(transform.parent == FirstPersonController.Instance.transform)
+        {
+            // Get string of holding text
+            
+            FirstPersonController.Instance.HoldingText.enabled = true;
+            FirstPersonController.Instance.HoldingText.text = "Holding " + GetFoodTypeName();
+        }
+    }
+
+    string GetFoodTypeName()
+    {
+        string stringToReturn = "";
+        switch (thisFoodItemData.CurrentFoodType)
+        {
+            case FoodItemData.FoodType.Burger:
+                stringToReturn = GetFoodScaleName();
+                stringToReturn += " " + GetFoodTemperatureName();
+                stringToReturn += " Burger";
+                break;
+            case FoodItemData.FoodType.Hotdog:
+                stringToReturn = GetFoodScaleName();
+                stringToReturn += " " + GetFoodTemperatureName();
+                stringToReturn += " Hotdog";
+                break;
+            case FoodItemData.FoodType.Taco:
+                stringToReturn = GetFoodScaleName();
+                stringToReturn += " " + GetFoodTemperatureName();
+                stringToReturn += " Taco";
+                break;
+            case FoodItemData.FoodType.Popsicle:
+                stringToReturn = GetFoodScaleName();
+                stringToReturn += " " + GetFoodTemperatureName();
+                stringToReturn += " Popsicle";
+                break;
+            case FoodItemData.FoodType.Drink:
+                stringToReturn = GetFoodScaleName();
+                stringToReturn += " " + GetFoodTemperatureName();
+                stringToReturn += " " + GetDrinkTypeName();
+                stringToReturn += " Drink";
+                break;
+            case FoodItemData.FoodType.EmptyDrink:
+                stringToReturn = "Empty Drink";
+                break;
+            case FoodItemData.FoodType.Plate:
+                if(transform.childCount > 0)
+                {
+                    stringToReturn = "Plate Of Food";
+                }
+                else
+                {
+                    stringToReturn = "Empty Plate";
+                }
+                break;
+            default:
+                return " Nothing";
+        }
+
+        return stringToReturn;
+    }
     
+    string GetDrinkTypeName()
+    {
+        string stringToReturn = "";
+        switch (thisFoodItemData.CurrentDrinkType)
+        {
+            case FoodItemData.DrinkType.Red:
+                stringToReturn += "Red";
+                break;
+            case FoodItemData.DrinkType.Green:
+                stringToReturn += "Green";
+                break;
+            case FoodItemData.DrinkType.Blue:
+                stringToReturn += "Blue";
+                break;
+            case FoodItemData.DrinkType.Yellow:
+                stringToReturn += "Yellow";
+                break;
+            case FoodItemData.DrinkType.Brown:
+                stringToReturn += "Brown";
+                break;
+        }
+        return stringToReturn;
+    }
+    
+    string GetFoodScaleName()
+    {
+        string stringToReturn = "";
+        switch (CurrentScale)
+        {
+            case Scale.micro:
+                stringToReturn += "Micro";
+                break;
+            case Scale.small:
+                stringToReturn += "Small";
+                break;
+            case Scale.medium:
+                stringToReturn += "Medium";
+                break;
+            case Scale.large:
+                stringToReturn += "Large";
+                break;
+            case Scale.huge:
+                stringToReturn += "Huge";
+                break;
+        }
+        return stringToReturn;
+    }
+    
+    string GetFoodTemperatureName()
+    {
+        string stringToReturn = "";
+        switch (thisFoodItemData.CurrentTemperature)
+        {
+            case FoodItemData.Temperature.Freezing:
+                stringToReturn += "Freezing";
+                break;
+            case FoodItemData.Temperature.Cold:
+                stringToReturn += "Cool";
+                break;
+            case FoodItemData.Temperature.Warm:
+                stringToReturn += "Warm";
+                break;
+            case FoodItemData.Temperature.Hot:
+                stringToReturn += "Hot";
+                break;
+            case FoodItemData.Temperature.Burning:
+                stringToReturn += "Burning";
+                break;
+            
+        }
+        return stringToReturn;
+    }
+
     public Vector3 GetCurrentScale()
     {
         switch(CurrentScale)

@@ -1,22 +1,32 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CustomerManager : MonoBehaviour
 {
     public static CustomerManager Instance;
 
+    public GameObject GameOverPanel;
+    
     public List<GameObject> CustomersInLine = new List<GameObject>();
     
     public List<GameObject> CustomersWaiting = new List<GameObject>();
     
     public List<GameObject> CustomerPrefabs = new List<GameObject>();
 
+    public float timeThisRun = 0;
+    
+    public TMP_Text TimerText;
+    
     public int customerSatisfaction = 100;
     
     public TMP_Text CustomerSatisfactionText;
+
+    public RectTransform CustomerSatisfactionFillImage;
     
     public Sprite BurgerIcon;
     
@@ -114,7 +124,7 @@ public class CustomerManager : MonoBehaviour
 
     public int CustomerCount = 0;
     
-    public int TimeBetweenCustomers = 10;
+    public int TimeBetweenCustomers = 30;
     
     private void Awake()
     {
@@ -133,6 +143,12 @@ public class CustomerManager : MonoBehaviour
     {
         StartCoroutine(SpawnCustomer());
         StartCoroutine(DepleteSatisfaction());
+        timeThisRun = Time.time;
+    }
+
+    public void ExitScene()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
     
     public void WaitForFood(GameObject customer)
@@ -291,6 +307,9 @@ public class CustomerManager : MonoBehaviour
     {
         while (true)
         {
+                    
+            yield return new WaitForSeconds(TimeBetweenCustomers);
+
             while(CustomersInLine.Count >= 3)
             {
                 yield return null;
@@ -309,21 +328,37 @@ public class CustomerManager : MonoBehaviour
             
             CustomersInLine.Add(customer);
         
-        
-            yield return new WaitForSeconds(TimeBetweenCustomers);
-        
-            TimeBetweenCustomers -= 1;
+
+            if (TimeBetweenCustomers > 2)
+            {
+                
+                TimeBetweenCustomers -= 1;
+            }
         }
 
     }
 
+    public void UpdateCustomerSatisfactionUI()
+    {
+        float fillAmount = (float)customerSatisfaction / 100;
+        CustomerSatisfactionFillImage.GetComponent<RectTransform>().sizeDelta = new Vector2(fillAmount * 1800, 40);
+        CustomerSatisfactionText.text = customerSatisfaction.ToString();
+    }
     IEnumerator DepleteSatisfaction()
     {
         while (true)
         {
-            yield return new WaitForSeconds(2);
-            customerSatisfaction -= CustomersWaiting.Count;
-            CustomerSatisfactionText.text = customerSatisfaction.ToString();
+            yield return new WaitForSeconds(7);
+            customerSatisfaction -= CustomersWaiting.Count + CustomersInLine.Count;
+            UpdateCustomerSatisfactionUI();
+            if(customerSatisfaction <= 0)
+            {
+                CursorLockMode cursorMode = CursorLockMode.None;
+                Cursor.lockState = cursorMode;
+                TimerText.text = (Time.time - timeThisRun).ToString("F0");
+                GameOverPanel.SetActive(true);
+                StopAllCoroutines();
+            }
         }
     }
 }

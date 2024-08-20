@@ -8,6 +8,14 @@ public class DoorHinge : MonoBehaviour
     [SerializeField] private string axis = "y";
     bool currentlyRotating = false;
     
+    public enum DoorState
+    {
+        Open,
+        Closed
+    }
+    
+    public DoorState doorState = DoorState.Closed;
+    
     public void ToggleDoor()
     {
         if(currentlyRotating)
@@ -39,12 +47,15 @@ public class DoorHinge : MonoBehaviour
     {
         // Rotate door 90 degrees on x axis over 1 second
         StartCoroutine(RotateDoor(90, 1));
+        doorState = DoorState.Open;
     }
     
     public void CloseDoor()
     {
         // Rotate door -90 degrees on x axis over 1 second
         StartCoroutine(RotateDoor(-90, 1));
+        doorState = DoorState.Closed;
+
     }
     
     IEnumerator RotateDoor(float angle, float duration)
@@ -52,18 +63,18 @@ public class DoorHinge : MonoBehaviour
         currentlyRotating = true;
         Quaternion startRotation = transform.rotation;
 
-        Quaternion endRotation = transform.rotation * Quaternion.Euler(0, angle, 0);
+        Quaternion endRotation = Quaternion.identity;
         if(axis == "x")
         {
-            endRotation = Quaternion.Euler(angle, 0, 0);
+            endRotation = transform.rotation * Quaternion.Euler(angle, 0, 0);
         }
         else if(axis == "y")
         {
-            endRotation = Quaternion.Euler(0, angle, 0);
+            endRotation = transform.rotation * Quaternion.Euler(0, angle, 0);
         }
         else if(axis == "z")
         {
-            endRotation = Quaternion.Euler(0, 0, angle);
+            endRotation = transform.rotation * Quaternion.Euler(0, 0, angle);
         }
         float startTime = Time.time;
         
